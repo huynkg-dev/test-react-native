@@ -1,0 +1,57 @@
+diff --git a/node_modules/react-native-calendars/src/calendar/header/index.d.ts b/node_modules/react-native-calendars/src/calendar/header/index.d.ts
+index e961173..e6a5963 100644
+--- a/node_modules/react-native-calendars/src/calendar/header/index.d.ts
++++ b/node_modules/react-native-calendars/src/calendar/header/index.d.ts
+@@ -1,7 +1,7 @@
+-import XDate from 'xdate';
+ import React, { ReactNode } from 'react';
+-import { StyleProp, ViewStyle, Insets, ViewProps } from 'react-native';
+-import { Theme, Direction } from '../../types';
++import { Insets, StyleProp, ViewProps, ViewStyle } from 'react-native';
++import XDate from 'xdate';
++import { Direction, Theme } from '../../types';
+ export interface CalendarHeaderProps {
+     /** The current month presented in the calendar */
+     month?: XDate;
+@@ -38,7 +38,7 @@ export interface CalendarHeaderProps {
+     /** Apply custom disable color to selected day names indexes */
+     disabledDaysIndexes?: number[];
+     /** Replace default title with custom one. the function receive a date as parameter */
+-    renderHeader?: (date?: XDate, info?: Pick<CalendarHeaderProps, 'testID'>) => ReactNode;
++    renderHeader?: (date?: XDate, gotoMonths?: () => void, info?: Pick<CalendarHeaderProps, 'testID'>) => ReactNode;
+     /** Replace default title with custom element */
+     customHeaderTitle?: JSX.Element;
+     /** Test ID */
+diff --git a/node_modules/react-native-calendars/src/calendar/header/index.js b/node_modules/react-native-calendars/src/calendar/header/index.js
+index c09389a..4dcaf39 100644
+--- a/node_modules/react-native-calendars/src/calendar/header/index.js
++++ b/node_modules/react-native-calendars/src/calendar/header/index.js
+@@ -1,7 +1,7 @@
+ import includes from 'lodash/includes';
++import { forwardRef, Fragment, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
++import { ActivityIndicator, Image, Platform, Text, TouchableOpacity, View } from 'react-native';
+ import XDate from 'xdate';
+-import React, { Fragment, useCallback, useMemo, forwardRef, useImperativeHandle, useRef } from 'react';
+-import { ActivityIndicator, Platform, View, Text, TouchableOpacity, Image } from 'react-native';
+ import { formatNumbers, weekDayNames } from '../../dateutils';
+ import styleConstructor from './style';
+ const accessibilityActions = [
+@@ -36,6 +36,9 @@ const CalendarHeader = forwardRef((props, ref) => {
+     const subtractMonth = useCallback(() => {
+         propsAddMonth?.(-1);
+     }, [propsAddMonth]);
++    const gotoMonths = useCallback((months) => {
++        propsAddMonth?.(months);
++    }, [propsAddMonth]);
+     const onPressLeft = useCallback(() => {
+         if (typeof onPressArrowLeft === 'function') {
+             return onPressArrowLeft(subtractMonth, month);
+@@ -81,7 +84,7 @@ const CalendarHeader = forwardRef((props, ref) => {
+     const _renderHeader = () => {
+         const webProps = Platform.OS === 'web' ? { 'aria-level': webAriaLevel } : {};
+         if (renderHeader) {
+-            return renderHeader(month, { testID });
++            return renderHeader(month, gotoMonths, { testID });
+         }
+         if (customHeaderTitle) {
+             return customHeaderTitle;
