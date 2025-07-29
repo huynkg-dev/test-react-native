@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 export default function HomeScreen() {
   return (
-    <View className='flex-1 bg-white p-8'>
+    <View className='flex-1 bg-white'>
       <HomeFilter/>
       <HomeListMovies/>
     </View>

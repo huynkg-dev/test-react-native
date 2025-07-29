@@ -7,9 +7,9 @@ export default function HomeLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
         tabBarShowLabel: false,
-        tabBarStyle: { 
+        tabBarStyle: {
           backgroundColor: '#042541'
         },
         tabBarActiveTintColor: '#FFFFFF',
@@ -18,7 +18,6 @@ export default function HomeLayout() {
       <Tabs.Screen
         name='index'
         options={{
-          headerShown: true,
           header: (props) => <Header {...props} />,
           tabBarIcon: ({ size, color }) =>
             <FontAwesome5 name='home' size={size} color={color} />
@@ -27,6 +26,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name='watch-list'
         options={{
+          header: (props) => <Header showHeader {...props} />,
           tabBarIcon: ({ size, color }) =>
             <FontAwesome name='bookmark' size={size} color={color} />
         }}

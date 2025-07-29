@@ -1,6 +1,6 @@
 import { CONTROL_HEIGHT, Responsive } from '@/shared/helper';
 import { FlashList } from '@shopify/flash-list';
-import { CheckIcon, ChevronsUpDownIcon, SearchIcon } from 'lucide-nativewind';
+import { ChevronDownIcon, ChevronLeftIcon, SearchIcon } from 'lucide-nativewind';
 import React, { forwardRef, useCallback, useEffect } from 'react';
 import { Dimensions, Modal, Pressable, PressableProps, Text, TextInput, View, ViewProps } from 'react-native';
 import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
@@ -68,7 +68,7 @@ const SelectEmpty = forwardRef<React.ComponentRef<typeof View>, ViewProps>(({ ..
       className='flex justify-center items-center'
       {...props}
     >
-      <Text className='text-base text-neutral-500'>Không có dữ liệu</Text>
+      <Text className='text-base text-neutral-500'>No data</Text>
     </View>
   );
 });
@@ -89,10 +89,11 @@ const SelectOptions = forwardRef<React.ComponentRef<typeof FlashList>, SelectOpt
       <Pressable
         key={`option_${item.value}`}
         style={{ height: ITEM_HEIGHT }}
-        className={'flex-row items-center px-3'}
+        className={'p-2'}
         onPress={() => onChange && onChange(item.value)}>
-        <Text className='flex-1 text-base'>{item.label}</Text>
-        {item.value === value && <CheckIcon size={18} className='text-green-500' />}
+        <View className={`h-full justify-center px-4 rounded ${item.value === value && 'bg-blue-sky'}`}>
+          <Text className={`text-base ${item.value === value && 'text-white'}`}>{item.label}</Text>
+        </View>
       </Pressable>
     )
   }, [value]);
@@ -101,6 +102,7 @@ const SelectOptions = forwardRef<React.ComponentRef<typeof FlashList>, SelectOpt
     <FlashList
       data={options}
       renderItem={renderItem}
+      showsHorizontalScrollIndicator={false}
       estimatedItemSize={ITEM_HEIGHT}
     />
   );
@@ -193,7 +195,7 @@ const SelectBox = forwardRef<React.ComponentRef<typeof Pressable>, SelectBoxProp
     <View ref={ref}>
       <Pressable
         ref={inputRef}
-        className={`flex-row items-center w-full bg-white border border-neutral-300 rounded px-2 ${className || ''}`}
+        className={`flex-row items-center w-full bg-white border border-gray-100 rounded px-2 ${className || ''}`}
         style={{ height: CONTROL_HEIGHT }}
         onPress={handlePress}
         {...props}
@@ -207,7 +209,11 @@ const SelectBox = forwardRef<React.ComponentRef<typeof Pressable>, SelectBoxProp
           editable={false}
           selectTextOnFocus={false}
         />
-        <ChevronsUpDownIcon size={18} className='text-neutral-500' />
+        {open ? (
+          <ChevronDownIcon size={20} className='text-neutral-500' />
+        ) : (
+          <ChevronLeftIcon size={20} className='text-neutral-500' />
+        )}
       </Pressable>
       <Modal visible={open} animationType={'fade'} transparent={true}>
         <View className='flex-1 justify-end'>

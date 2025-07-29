@@ -7,7 +7,7 @@ const Button = forwardRef<React.ComponentRef<typeof TouchableOpacity>, Touchable
     ref={ref}
     activeOpacity={0.7}
     style={{ height: CONTROL_HEIGHT }}
-    className={`flex-row justify-center items-center gap-2 w-full bg-primary rounded ${className || ''}`}
+    className={`flex-row justify-center items-center gap-2 rounded ${className || ''}`}
     {...props}
   />
 ));
@@ -16,7 +16,7 @@ const ButtonIcon = forwardRef<React.ComponentRef<typeof TouchableOpacity>, Touch
   <TouchableOpacity
     ref={ref}
     activeOpacity={0.7}
-    className={`min-h-12 min-w-12 justify-center items-center rounded-full bg-primary ${className || ''}`}
+    className={`min-h-12 min-w-12 justify-center items-center rounded-full ${className || ''}`}
     {...props}
   />
 ));

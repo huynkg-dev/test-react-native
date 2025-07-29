@@ -8,7 +8,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, TextInputProps>((
 }, ref) => (
   <TextInput
     ref={ref}
-    className={`w-full bg-white border border-neutral-300 text-neutral-800 rounded px-4 ${className || ''}`}
+    className={`w-full bg-white border border-gray-100 text-neutral-800 rounded px-4 ${className || ''}`}
     style={{ height: CONTROL_HEIGHT }}
     placeholderTextColor={'#bcbcbc'}
     selectionColor={'#2986cc'}

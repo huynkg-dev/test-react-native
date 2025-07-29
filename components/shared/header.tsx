@@ -8,30 +8,32 @@ import { Image } from 'expo-image';
 
 type HeaderProps = (NativeStackHeaderProps | BottomTabHeaderProps) & {
   showHeader?: boolean;
+  headerColor?: string;
 };
 
 const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
-  const { navigation, route, options, showHeader } = props;
+  const { navigation, options, showHeader, headerColor } = props;
   const insets = useSafeAreaInsets();
   const title: string = options.headerTitle as string || '';
   const titleStyle: any = options.headerTitleStyle || {};
-  const isTransparent: boolean = options.headerTransparent || false;
   const isShow: boolean = showHeader || false;
   const isCanGoBack: boolean = navigation.canGoBack();
 
   return (
     <>
       <StatusBar style={'dark'} translucent={true} />
-      <View style={{ paddingTop: insets.top }} className={`${isTransparent ? 'bg-transparent' : 'bg-white'}`}>
-        <View className='bg-white items-center justify-center py-2'>
+      <View style={{ paddingTop: insets.top, backgroundColor: 'white' }}>
+        <View className='items-center justify-center py-4'>
           <Image
             style={{ width: 80, height: 60 }}
-            source={require('@/assets/images/backgrounds/logo.png')}
+            source={require('@/assets/images/backgrounds/logo.webp')}
             contentFit='cover'
           />
         </View>
-        {isShow && (
-          <View className='flex-row py-4'>
+      </View>
+      {isShow && (
+        <View className='bg-blue-sky'>
+          <View className='flex-row py-4' style={{ backgroundColor: headerColor }}>
             <View className='flex-1'>
               {isCanGoBack && (
                 <TouchableOpacity className='flex-1 items-center' onPress={() => navigation.goBack()}>
@@ -48,8 +50,8 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
               {options.headerRight && options.headerRight({ canGoBack: isCanGoBack })}
             </View>
           </View>
-        )}
-      </View>
+        </View>
+      )}
     </>
   );
 };
