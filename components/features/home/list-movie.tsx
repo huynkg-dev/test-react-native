@@ -100,7 +100,7 @@ const HomeListMovies: React.FC<HomeListMoviesProps> = ({
         data={data ? data.pages.flatMap(page => page.data) : []}
         keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
-        estimatedItemSize={200}
+        estimatedItemSize={150}
         onEndReachedThreshold={0.1}
         scrollEventThrottle={16}
         //onEndReached={onLoadMore}

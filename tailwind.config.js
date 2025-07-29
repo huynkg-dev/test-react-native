@@ -8,7 +8,10 @@ module.exports = {
       colors: {
         'gray-100': '#E3E3E3',
         'gray-200': '#F5F5F5',
-        'blue-sky': '#00B4E4'
+        'gray-300': '#828282',
+        'blue-sky': '#00B4E4',
+        'dark-blue': '#042541',
+        'purple': '#9747FF'
       },
     },
   },

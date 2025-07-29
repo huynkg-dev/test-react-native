@@ -1,6 +1,6 @@
 import { CONTROL_HEIGHT, Responsive } from '@/shared/helper';
 import { FlashList } from '@shopify/flash-list';
-import { ChevronDownIcon, ChevronLeftIcon, SearchIcon } from 'lucide-nativewind';
+import { ChevronDownIcon, ChevronRightIcon, SearchIcon } from 'lucide-nativewind';
 import React, { forwardRef, useCallback, useEffect } from 'react';
 import { Dimensions, Modal, Pressable, PressableProps, Text, TextInput, View, ViewProps } from 'react-native';
 import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
@@ -212,7 +212,7 @@ const SelectBox = forwardRef<React.ComponentRef<typeof Pressable>, SelectBoxProp
         {open ? (
           <ChevronDownIcon size={20} className='text-neutral-500' />
         ) : (
-          <ChevronLeftIcon size={20} className='text-neutral-500' />
+          <ChevronRightIcon size={20} className='text-neutral-500' />
         )}
       </Pressable>
       <Modal visible={open} animationType={'fade'} transparent={true}>
@@ -251,5 +251,127 @@ const SelectBox = forwardRef<React.ComponentRef<typeof Pressable>, SelectBoxProp
   );
 });
 
-export { SelectBox, SelectOption };
+const UnderlineSelect = forwardRef<React.ComponentRef<typeof Pressable>, SelectBoxProps>(({
+  value,
+  datasource,
+  placeholder,
+  disableSearch = false,
+  className,
+  onChange,
+  ...props
+}, ref) => {
+  const inputRef = React.useRef<React.ComponentRef<typeof Pressable>>(null);
+  const [selected, setSelected] = React.useState<string>();
+  const [open, setOpen] = React.useState(false);
+  const [keyword, setKeyword] = React.useState<string>('');
+  const [position, setPosition] = React.useState({ x: 0, y: 0, width: 0, height: 0 });
+  const [options, setOptions] = React.useState<SelectOption[]>(datasource);
+
+  const modalHeight = React.useMemo(() => {
+    if (options.length > 0) {
+      return Math.min(options.length * ITEM_HEIGHT + (disableSearch ? 0 : ITEM_HEIGHT), MAX_MODAL_HEIGHT);
+    }
+    else {
+      return EMPTY_MODAL_HEIGHT + (disableSearch ? 0 : ITEM_HEIGHT);
+    }
+  }, [options]);
+
+  useEffect(() => {
+    if (datasource.length > 0) {
+      setOptions(datasource);
+    }
+  }, [datasource]);
+
+  // Set selected value if value prop is changed
+  useEffect(() => {
+    if (value) {
+      const selectedItem = options.find(item => item.value === value);
+      if (selectedItem) {
+        setSelected(selectedItem.label);
+      }
+    }
+  }, [value]);
+
+  // Search by keyword
+  useEffect(() => {
+    if (datasource.length > 0) {
+      setOptions(datasource.filter(e => e.label.toLowerCase().includes(keyword.toLowerCase())));
+    }
+  }, [keyword]);
+
+  const handlePress = () => {
+    if (inputRef.current) {
+      // Calculate the position of the options modal to show in screen
+      inputRef.current.measureInWindow((x, y, width, height) => {
+        let calculateY = y + height;
+
+        if (calculateY > SCREEN_HEIGHT - modalHeight) {
+          calculateY = y - modalHeight - MARGIN;
+        } else {
+          calculateY = calculateY + MARGIN;
+        }
+        setPosition({ x, y: calculateY, width, height });
+        setOpen(!open);
+      });
+    }
+  };
+
+  const handleClose = () => {
+    setKeyword('');
+    setOpen(!open);
+  };
+
+  const handleChange = (value: any) => {
+    onChange && onChange(value);
+    setOpen(!open);
+  };
+
+  return (
+    <View ref={ref}>
+      <Pressable
+        ref={inputRef}
+        className={`w-28 border-b-2 border-blue-sky rounded-none flex-row items-center bg-white px-2 ${className || ''}`}
+        onPress={handlePress}
+        {...props}
+      >
+        <TextInput
+          value={selected}
+          className='flex-1 no-border text-base text-blue-sky font-bold'
+          placeholder={placeholder}
+          placeholderTextColor={'#bcbcbc'}
+          selectionColor={'#2986cc'}
+          editable={false}
+          selectTextOnFocus={false}
+        />
+        <ChevronDownIcon size={20} className='text-blue-sky' />
+      </Pressable>
+      <Modal visible={open} animationType={'fade'} transparent={true}>
+        <View className='flex-1 justify-end'>
+          <Pressable
+            className='absolute top-0 bottom-0 left-0 right-0'
+            onPress={handleClose}
+          />
+          <SelectContainer
+            style={{
+              position: 'absolute',
+              top: position.y,
+              left: position.x,
+              width: position.width,
+              height: modalHeight
+            }}>
+            {options.length > 0 && (
+              <SelectOptions
+                value={value}
+                options={datasource}
+                onChange={handleChange}
+              />
+            )}
+          </SelectContainer>
+        </View>
+      </Modal>
+    </View>
+  );
+});
+
+export { SelectBox, UnderlineSelect, SelectOption };
 

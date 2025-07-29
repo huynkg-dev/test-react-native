@@ -16,11 +16,6 @@ export interface Movie {
   image: string;
 };
 
-export interface UserScore {
-  percentage: number;
-  label: string;
-}
-
 export interface CrewMember {
   name: string;
   role: string;
@@ -41,6 +36,7 @@ export interface CastMember {
 }
 
 export interface MovieDetail {
+  id: number;
   title: string;
   year: string;
   image: string;
@@ -52,7 +48,7 @@ export interface MovieDetail {
   status: string;
   originalLanguage: string;
   posterImage: string;
-  userScore: UserScore;
+  userScore: number;
   tagline: string;
   crew: CrewMember[];
   overview: string;

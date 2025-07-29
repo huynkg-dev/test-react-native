@@ -39,6 +39,7 @@ const LIST_MOVIES: Movie[] = [
 ];
 
 const MOVIE_DETAIL: MovieDetail = {
+  'id': 1,
   'title': 'Barbie',
   'year': '2023',
   'image': require('@/assets/images/movies/iuFNMS8U5cb6xfzi51Dbkovj7vM (1) 1.webp'),
@@ -50,10 +51,7 @@ const MOVIE_DETAIL: MovieDetail = {
   'status': 'Released',
   'originalLanguage': 'English',
   'posterImage': '',
-  'userScore': {
-    'percentage': 74,
-    'label': 'User Score'
-  },
+  'userScore': 74,
   'tagline': 'She\'s everything. He\'s just Ken.',
   'crew': [
     {
@@ -71,55 +69,55 @@ const MOVIE_DETAIL: MovieDetail = {
       'id': 1,
       'name': 'Margot Robbie',
       'character': 'Barbie',
-      'image': ''
+      'image': require('@/assets/images/movies/euDPyqLnuwaWMHajcU3oZ9uZezR 1.webp')
     },
     {
       'id': 2,
       'name': 'Ryan Gosling',
       'character': 'Ken',
-      'image': ''
+      'image': require('@/assets/images/movies/lyUyVARQKhGxaxy0FbPJCQRpiaW 1.webp')
     },
     {
       'id': 3,
       'name': 'America Ferrera',
       'character': 'Gloria',
-      'image': ''
+      'image': require('@/assets/images/movies/dhiUliLE7dFaqj5BKNQ6x7Wm9uR 1.webp')
     },
     {
       'id': 4,
       'name': 'Kate McKinnon',
       'character': 'Barbie',
-      'image': ''
+      'image': require('@/assets/images/movies/2cNetzianFcxPQbyOQnkAIkKUZE 1.webp')
     },
     {
       'id': 5,
       'name': 'Ariana Greenblatt',
       'character': 'Sasha',
-      'image': ''
+      'image': require('@/assets/images/movies/8xrCTYP8PuHixWzkiX6onJNfw8k 1.webp')
     },
     {
       'id': 6,
       'name': 'Michael Cera',
       'character': 'Allan',
-      'image': ''
+      'image': require('@/assets/images/movies/lFKyW2C7xj7X4nWpOEbVIDGOKrH 1.webp')
     },
     {
       'id': 7,
       'name': 'Will Ferrell',
       'character': 'Mattel CEO',
-      'image': ''
+      'image': require('@/assets/images/movies/xYPM1OOLXZguj4FsgmOzTSUXaXd 1.webp')
     },
     {
       'id': 8,
       'name': 'Issa Rae',
       'character': 'Barbie',
-      'image': ''
+      'image': require('@/assets/images/movies/1tX1T5ZNCMh2KYP1jMgfg8P26vm 1.webp')
     },
     {
       'id': 9,
       'name': 'Alexandra Shipp',
       'character': 'Barbie',
-      'image': ''
+      'image': require('@/assets/images/movies/wOHyVZTP6UzCAALxXEpr0Os6Y5C 1.webp')
     }
   ],
   'recommendations': [
@@ -127,19 +125,19 @@ const MOVIE_DETAIL: MovieDetail = {
       'id': 1,
       'title': 'Kingdom 3: the Flame of Fate',
       'rating': 76,
-      'image': ''
+      'image': require('@/assets/images/movies/r54HQwvisSXMfip7oJNhPSWyCK5 1.webp')
     },
     {
       'id': 2,
       'title': 'Oppenheimer',
       'rating': 83,
-      'image': ''
+      'image': require('@/assets/images/movies/rLb2cwF3Pazuxaj0sRXQ037tGI1 1.webp')
     },
     {
       'id': 3,
       'title': 'The Flash',
       'rating': 69,
-      'image': ''
+      'image': require('@/assets/images/movies/yF1eOkaYvwiORauRCPWznV9xVvi 1.webp')
     }
   ],
 };

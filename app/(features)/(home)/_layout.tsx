@@ -9,9 +9,7 @@ export default function HomeLayout() {
       screenOptions={{
         headerShown: true,
         tabBarShowLabel: false,
-        tabBarStyle: {
-          backgroundColor: '#042541'
-        },
+        tabBarStyle: { backgroundColor: '#042541' },
         tabBarActiveTintColor: '#FFFFFF',
         tabBarInactiveTintColor: '#FFFFFF',
       }}>
@@ -26,7 +24,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name='watch-list'
         options={{
-          header: (props) => <Header showHeader {...props} />,
+          header: (props) => <Header showHeader headerColor='#042541' {...props} />,
           tabBarIcon: ({ size, color }) =>
             <FontAwesome name='bookmark' size={size} color={color} />
         }}

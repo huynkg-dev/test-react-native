@@ -18,7 +18,7 @@ export const Loader = () => {
         zIndex: 9999
       }}>
       <ActivityIndicator size='large' color='white' />
-      <Text className='text-xl text-white'>Đang tải dữ liệu</Text>
+      <Text className='text-xl text-white'>Loading data...</Text>
     </View>
   );
 };
