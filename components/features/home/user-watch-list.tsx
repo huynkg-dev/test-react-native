@@ -7,8 +7,9 @@ import React from 'react';
 import { UnderlineSelect } from '@/components/shared';
 import { FlashList } from '@shopify/flash-list';
 import { Movie } from '@/models';
-import { format, parseISO } from 'date-fns';
+import { format, parse, parseISO } from 'date-fns';
 import { useRouter } from 'expo-router';
+import _ from 'lodash';
 
 const FilterOptions = [
   { label: 'Rating', value: 'RATE' },
@@ -22,6 +23,73 @@ const UserWatchList: React.FC = () => {
   const watchList = useAppSelector(state => state.user.watchList);
   const [order, setOrder] = React.useState(false);
   const [filter, setFilter] = React.useState(FilterOptions[0].value);
+
+  const [showWatchList, setShowWatchList] = React.useState<Movie[]>(
+    _.orderBy(watchList,
+      [(item) => item.vote_average],
+      [order ? 'desc' : 'asc']
+    )
+  );
+
+  const handleFilter = (value: string) => {
+    setFilter(value);
+    switch (value) {
+      case 'RATE':
+        setShowWatchList(
+          _.orderBy(watchList,
+            [(item) => item.vote_average],
+            [order ? 'desc' : 'asc']
+          )
+        );
+        break;
+      case 'ALPHA':
+        setShowWatchList(
+          _.orderBy(watchList,
+            [(item) => item.title],
+            [order ? 'desc' : 'asc']
+          )
+        );
+        break;
+      case 'RELEASE':
+        setShowWatchList(
+          _.orderBy(watchList,
+            [(item) => parse(item.release_date, 'yyyy-MM-dd', new Date())],
+            [order ? 'desc' : 'asc']
+          )
+        );
+        break;
+    }
+  };
+
+  const handleOrder = () => {
+    setOrder(prev => !prev);
+    switch (filter) {
+      case 'RATE':
+        setShowWatchList(
+          _.orderBy(watchList,
+            [(item) => item.vote_average],
+            [!order ? 'desc' : 'asc']
+          )
+        );
+        break;
+      case 'ALPHA':
+        setShowWatchList(
+          _.orderBy(watchList,
+            [(item) => item.title],
+            [!order ? 'desc' : 'asc']
+          )
+        );
+        break;
+      case 'RELEASE':
+        setShowWatchList(
+          _.orderBy(watchList,
+            [(item) => parse(item.release_date, 'yyyy-MM-dd', new Date())],
+            [!order ? 'desc' : 'asc']
+          )
+        );
+        break;
+    }
+  };
 
   const gotoDetail = React.useCallback((id: number) => {
     router.push(`/(features)/movie-detail?id=${id}`);
@@ -39,7 +107,7 @@ const UserWatchList: React.FC = () => {
     const parsedDate = parseISO(item.release_date);
     const formattedDate = format(parsedDate, 'dd MMMM yyyy');
     return (
-      <Pressable 
+      <Pressable
         className='flex-row mb-2 w-full bg-white'
         onPress={() => gotoDetail(item.id)}>
         <TouchableOpacity
@@ -72,11 +140,11 @@ const UserWatchList: React.FC = () => {
         <Text className='text-lg text-gray-300'>Filter by:</Text>
         <UnderlineSelect
           value={filter}
-          onChange={setFilter}
+          onChange={handleFilter}
           datasource={FilterOptions}
           disableSearch
         />
-        <TouchableOpacity className='flex-row gap-2 items-center' onPress={() => setOrder(prev => !prev)}>
+        <TouchableOpacity className='flex-row gap-2 items-center' onPress={handleOrder}>
           <Text className='text-lg text-gray-300'>Order:</Text>
           {order ? (
             <ArrowUpIcon size={22} />
@@ -87,7 +155,7 @@ const UserWatchList: React.FC = () => {
       </View>
       <FlashList
         className='flex-1'
-        data={watchList}
+        data={showWatchList}
         keyExtractor={(item) => `${item.id}`}
         renderItem={renderItem}
         ListEmptyComponent={renderEmpty}
