@@ -1,7 +1,6 @@
 import * as CryptoJS from 'crypto-js';
 import { Dimensions } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import _ from 'lodash';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 type ResponsiveConfig = {
@@ -44,8 +43,23 @@ const GenerateDeviceKey = () => {
 
 const CONTROL_HEIGHT = Responsive({ base: 48, lg: 55 });
 
+const SortOptions = [
+  { label: 'By alphabetical order', value: 'ALPHABE' },
+  { label: 'By rating', value: 'RATING' },
+  { label: 'By release date', value: 'RELEASE' }
+];
+
+const TagOptions = [
+  { label: 'Now Playing', value: 'PLAY' },
+  { label: 'Upcoming', value: 'UP' },
+  { label: 'Popular', value: 'POP' },
+];
+
+
 export {
   CONTROL_HEIGHT,
+  SortOptions,
+  TagOptions,
   GenerateDeviceKey,
   Responsive
 };

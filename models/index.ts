@@ -1,4 +1,10 @@
-export interface ListParam {
+export interface MovieFilter {
+  search?: string;
+  tag?: string;
+  sort?: string;
+};
+
+export interface ListParam extends MovieFilter {
   offset: number;
   limit: number;
 };
@@ -14,6 +20,8 @@ export interface Movie {
   date: string;
   description: string;
   image: string;
+  tags: string[];
+  rating: number;
 };
 
 export interface CrewMember {

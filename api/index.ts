@@ -1,4 +1,6 @@
 import { ListParam, ListResponse, Movie, MovieDetail } from '@/models';
+import { parse } from 'date-fns';
+import _ from 'lodash';
 
 const LIST_MOVIES: Movie[] = [
   {
@@ -6,35 +8,45 @@ const LIST_MOVIES: Movie[] = [
     'title': 'Barbie',
     'date': '19 July 2023',
     'description': 'Barbie and Ken are having the time of their lives in the colorful and...',
-    'image': require('@/assets/images/movies/iuFNMS8U5cb6xfzi51Dbkovj7vM (1) 1.webp')
+    'image': require('@/assets/images/movies/iuFNMS8U5cb6xfzi51Dbkovj7vM (1) 1.webp'),
+    'rating': 74,
+    'tags': ['PLAY', 'POP']
   },
   {
     'id': 2,
     'title': 'The Flash',
     'date': '13 June 2023',
     'description': 'When his attempt to save his family inadvertently alters the future, Barr...',
-    'image': require('@/assets/images/movies/rktDFPbfHfUbArZ6OOOKsXcv0Bm 1.webp')
+    'image': require('@/assets/images/movies/rktDFPbfHfUbArZ6OOOKsXcv0Bm 1.webp'),
+    'rating': 62,
+    'tags': ['PLAY', 'POP']
   },
   {
     'id': 3,
     'title': 'The Little Mermaid',
     'date': '18 May 2023',
     'description': 'The youngest of King Triton\'s daughters, and the most defiant...',
-    'image': require('@/assets/images/movies/ym1dxyOk4jFcSl4Q2zmRrA5BEEN 1.webp')
+    'image': require('@/assets/images/movies/ym1dxyOk4jFcSl4Q2zmRrA5BEEN 1.webp'),
+    'rating': 31,
+    'tags': ['PLAY', 'UP']
   },
   {
     'id': 4,
     'title': 'Guardians of the Galaxy Vol. 3',
     'date': '3 May 2023',
     'description': 'Peter Quill, still reeling from the loss of Gamora, must rally his team...',
-    'image': require('@/assets/images/movies/r2J02Z2OpNTctfOSN1Ydgii51I3 1.webp')
+    'image': require('@/assets/images/movies/r2J02Z2OpNTctfOSN1Ydgii51I3 1.webp'),
+    'rating': 82,
+    'tags': ['PLAY', 'UP']
   },
   {
     'id': 5,
     'title': 'Ruby Gillman, Teenage Kraken',
     'date': '28 June 2023',
     'description': 'Ruby Gillman, a sweet and awkward high school student...',
-    'image': require('@/assets/images/movies/kgrLpJcLBbyhWIkK7fx1fM4iSvf 1.webp')
+    'image': require('@/assets/images/movies/kgrLpJcLBbyhWIkK7fx1fM4iSvf 1.webp'),
+    'rating': 70,
+    'tags': ['PLAY', 'UP']
   }
 ];
 
@@ -142,13 +154,44 @@ const MOVIE_DETAIL: MovieDetail = {
   ],
 };
 
+const sortList = (data: Movie[], sort: string): Movie[] => {
+  switch (sort) {
+    case 'ALPHABE':
+      return _.orderBy(data,
+        [(item) => item.title],
+        ['asc']
+      );
+    case 'RATING':
+      return _.orderBy(data,
+        [(item) => item.rating],
+        ['desc']
+      );
+    case 'RELEASE':
+      return _.orderBy(data,
+        [(item) => parse(item.date, 'dd MMMM yyyy', new Date())],
+        ['desc']
+      );
+  }
+  return data;
+}
+
 const getListMovies = (params: ListParam): Promise<ListResponse<Movie>> => {
   return new Promise((resolve) => {
     const start = params.offset * params.limit;
     const end = start + params.limit;
+    const result = LIST_MOVIES
+      .filter(e => params.search ? (
+        e.title.toLowerCase().includes(params.search.toLowerCase()) || e.description.toLowerCase().includes(params.search.toLowerCase())
+      ) : true
+        && params.tag ? (
+        e.tags.includes(params.tag)
+      ) : true
+      )
+      .slice(start, end);
+
     setTimeout(() => {
       resolve({
-        data: LIST_MOVIES.slice(start, end),
+        data: params.sort ? sortList(result, params.sort) : result,
         hasNextPage: end < LIST_MOVIES.length
       });
     }, 1000);

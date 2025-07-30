@@ -51,14 +51,16 @@ export default function MovieDetailScreen() {
   const renderCastItem = React.useCallback(({ item }: { item: CastMember }) => {
     return (
       <View
-        className='flex-1 w-40 mr-2 border border-gray-100 bg-white'
+        className='flex-1 w-40 mr-2 bg-white'
         style={{ borderRadius: 8 }}>
         <Image
           style={{ width: '100%', height: 150, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
           source={item.image}
           contentFit='cover'
         />
-        <View className='p-1 justify-center items-center'>
+        <View
+          className='p-1 justify-center items-center border border-t-0 border-gray-100'
+          style={{ borderBottomLeftRadius: 8, borderBottomRightRadius: 8 }}>
           <Text className='text-lg text-center font-extrabold'>{item.name}</Text>
           <Text className='text-lg text-center'>{item.character}</Text>
         </View>
@@ -88,7 +90,9 @@ export default function MovieDetailScreen() {
       'title': 'Barbie',
       'date': '19 July 2023',
       'description': 'Barbie and Ken are having the time of their lives in the colorful and...',
-      'image': require('@/assets/images/movies/iuFNMS8U5cb6xfzi51Dbkovj7vM (1) 1.webp')
+      'image': require('@/assets/images/movies/iuFNMS8U5cb6xfzi51Dbkovj7vM (1) 1.webp'),
+      'rating': 74,
+      'tags': []
     }));
   };
 
