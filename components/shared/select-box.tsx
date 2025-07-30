@@ -336,7 +336,7 @@ const UnderlineSelect = forwardRef<React.ComponentRef<typeof Pressable>, SelectB
       >
         <TextInput
           value={selected}
-          className='flex-1 no-border text-base text-blue-sky font-bold'
+          className='flex-1 no-border text-base text-blue-sky font-bold pb-2'
           placeholder={placeholder}
           placeholderTextColor={'#bcbcbc'}
           selectionColor={'#2986cc'}
