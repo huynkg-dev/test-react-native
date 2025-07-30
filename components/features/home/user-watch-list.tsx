@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import { ArrowDownIcon, ArrowUpIcon, XIcon } from 'lucide-nativewind';
 import { removeWatchList } from '@/redux/slices/user-slice';
@@ -7,17 +7,25 @@ import React from 'react';
 import { UnderlineSelect } from '@/components/shared';
 import { FlashList } from '@shopify/flash-list';
 import { Movie } from '@/models';
+import { format, parseISO } from 'date-fns';
+import { useRouter } from 'expo-router';
 
 const FilterOptions = [
   { label: 'Rating', value: 'RATE' },
-  { label: 'Score', value: 'SCORE' },
+  { label: 'Alphabe', value: 'ALPHA' },
+  { label: 'Release Date', value: 'RELEASE' },
 ];
 
 const UserWatchList: React.FC = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const watchList = useAppSelector(state => state.user.watchList);
   const [order, setOrder] = React.useState(false);
   const [filter, setFilter] = React.useState(FilterOptions[0].value);
+
+  const gotoDetail = React.useCallback((id: number) => {
+    router.push(`/(features)/movie-detail?id=${id}`);
+  }, []);
 
   const renderEmpty = React.useCallback(() => {
     return (
@@ -28,8 +36,12 @@ const UserWatchList: React.FC = () => {
   }, []);
 
   const renderItem = React.useCallback(({ item }: { item: Movie }) => {
+    const parsedDate = parseISO(item.release_date);
+    const formattedDate = format(parsedDate, 'dd MMMM yyyy');
     return (
-      <View className='flex-row mb-2 w-ful bg-white'>
+      <Pressable 
+        className='flex-row mb-2 w-full bg-white'
+        onPress={() => gotoDetail(item.id)}>
         <TouchableOpacity
           className='absolute top-0 right-0 p-2 z-50'
           onPress={() => dispatch(removeWatchList(item.id))}>
@@ -37,17 +49,19 @@ const UserWatchList: React.FC = () => {
         </TouchableOpacity>
         <Image
           style={{ width: 96, height: 141, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
-          source={item.image}
+          source={{
+            uri: `${process.env.EXPO_PUBLIC_IMAGE_URL}\w400${item.backdrop_path}`
+          }}
           contentFit='cover'
         />
         <View
-          className='flex-1 gap-2 p-4 border border-l-0 border-gray-100'
+          className='flex-1 gap-2 p-4 pr-8 border border-l-0 border-gray-100'
           style={{ borderTopRightRadius: 8, borderBottomRightRadius: 8 }}>
           <Text className='text-xl font-bold'>{item.title}</Text>
-          <Text className='text-gray-400'>{item.date}</Text>
-          <Text>{item.description}</Text>
+          <Text className='text-gray-400'>{formattedDate}</Text>
+          <Text numberOfLines={2}>{item.overview}</Text>
         </View>
-      </View>
+      </Pressable>
     );
   }, []);
 

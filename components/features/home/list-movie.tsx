@@ -1,29 +1,36 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import API from '@/api';
-import { MovieFilter, ListParam, Movie } from '@/models';
+import { Movie, ListMovieParam } from '@/models';
 import { RefreshControl, View, Text, Pressable } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import React from 'react';
 import { Button, SkeletonLoader } from '@/components/shared';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import { format, parseISO } from 'date-fns';
+import { useAppSelector } from '@/redux/hooks';
 
-interface HomeListMoviesProps {
-  filter: MovieFilter;
-};
-
-const fetchData = async ({ pageParam }: { pageParam: ListParam }) => {
-  const result = await API.getListMovies(pageParam);
-  if (result.data.length > 0) {
-    return {
-      data: result.data,
-      nextCursor: result.hasNextPage ? {
-        ...pageParam,
-        offset: ++pageParam.offset
-      } : undefined
-    };
+const fetchData = async ({ pageParam }: { pageParam: ListMovieParam }) => {
+  try {
+    const res = await API.MOVIE.listMovies(pageParam);
+    if (res.results.length > 0) {
+      return {
+        data: res.results,
+        nextCursor: pageParam.page < res.total_pages ? {
+          ...pageParam,
+          page: ++pageParam.page
+        } : undefined
+      };
+    }
+    else {
+      return {
+        data: [],
+        nextCursor: undefined
+      }
+    }
   }
-  else {
+  catch (err) {
+    console.error(err);
     return {
       data: [],
       nextCursor: undefined
@@ -31,9 +38,8 @@ const fetchData = async ({ pageParam }: { pageParam: ListParam }) => {
   }
 };
 
-const HomeListMovies: React.FC<HomeListMoviesProps> = ({
-  filter
-}) => {
+const HomeListMovies: React.FC = () => {
+  const filter = useAppSelector(state => state.user.userFilter);
   const router = useRouter();
   const {
     isLoading,
@@ -43,7 +49,7 @@ const HomeListMovies: React.FC<HomeListMoviesProps> = ({
     fetchNextPage,
     refetch
   } = useInfiniteQuery({
-    initialPageParam: { offset: 0, limit: 5 },
+    initialPageParam: { page: 1 },
     queryKey: ['cot-cay-so', filter],
     queryFn: ({ pageParam }) => fetchData({ pageParam: { ...pageParam, ...filter } }),
     getNextPageParam: (lastPage) => lastPage?.nextCursor,
@@ -55,8 +61,8 @@ const HomeListMovies: React.FC<HomeListMoviesProps> = ({
     hasNextPage && !isFetching && !isLoading && fetchNextPage()
   };
 
-  const gotoDetail = React.useCallback(() => {
-    router.push('/(features)/movie-detail');
+  const gotoDetail = React.useCallback((id: number) => {
+    router.push(`/(features)/movie-detail?id=${id}`);
   }, []);
 
   const renderEmpty = React.useCallback(() => {
@@ -80,21 +86,25 @@ const HomeListMovies: React.FC<HomeListMoviesProps> = ({
   }, [data, onLoadMore]);
 
   const renderItem = React.useCallback(({ item }: { item: Movie }) => {
+    const parsedDate = parseISO(item.release_date);
+    const formattedDate = format(parsedDate, 'dd MMMM yyyy');
     return (
       <Pressable
         className='flex-row mb-2 w-full bg-white'
-        onPress={gotoDetail}>
+        onPress={() => gotoDetail(item.id)}>
         <Image
           style={{ width: 96, height: 141, borderTopLeftRadius: 8, borderBottomLeftRadius: 8 }}
-          source={item.image}
+          source={{
+            uri: `${process.env.EXPO_PUBLIC_IMAGE_URL}\w400${item.backdrop_path}`
+          }}
           contentFit='cover'
         />
         <View
           className='flex-1 gap-2 p-4 border border-l-0 border-gray-100'
           style={{ borderTopRightRadius: 8, borderBottomRightRadius: 8 }}>
           <Text className='text-xl font-bold'>{item.title}</Text>
-          <Text className='text-gray-400'>{item.date}</Text>
-          <Text>{item.description}</Text>
+          <Text className='text-gray-400'>{formattedDate}</Text>
+          <Text numberOfLines={2}>{item.overview}</Text>
         </View>
       </Pressable>
     );

@@ -1,11 +1,18 @@
-import { Movie } from '@/models';
+import { Movie, MovieFilter } from '@/models';
+import { SortOptions, TagOptions } from '@/shared/helper';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface UserState {
+  userFilter: MovieFilter;
   watchList: Movie[];
 }
 
 const initialState: UserState = {
+  userFilter: {
+    search: '',
+    tag: TagOptions[0].value,
+    sort: SortOptions[0].value
+  },
   watchList: []
 };
 
@@ -13,6 +20,9 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    changeFilter: (state: UserState, action: PayloadAction<MovieFilter>) => { 
+      state.userFilter = action.payload;
+    },
     addWatchList: (state: UserState, action: PayloadAction<Movie>) => { 
       state.watchList.push(action.payload);
     },
@@ -23,6 +33,7 @@ const userSlice = createSlice({
 });
 
 export const {
+  changeFilter,
   addWatchList,
   removeWatchList
 } = userSlice.actions;

@@ -1,22 +1,19 @@
 import { Button, Input, SelectBox } from '@/components/shared';
-import { MovieFilter } from '@/models';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { changeFilter } from '@/redux/slices/user-slice';
 import { SortOptions, TagOptions } from '@/shared/helper';
 import React from 'react';
 import { View, Text } from 'react-native';
 
-interface HomeFilterProps {
-  onSearch?: (filter: MovieFilter) => void;
-};
-
-const HomeFilter: React.FC<HomeFilterProps> = ({
-  onSearch
-}) => {
-  const [search, setSearch] = React.useState('');
-  const [tag, setTag] = React.useState(TagOptions[0].value);
-  const [sort, setSort] = React.useState(SortOptions[0].value);
+const HomeFilter: React.FC= () => {
+  const dispatch = useAppDispatch();
+  const filter = useAppSelector(state => state.user.userFilter);
+  const [search, setSearch] = React.useState(filter.search);
+  const [tag, setTag] = React.useState(filter.tag);
+  const [sort, setSort] = React.useState(filter.sort);
   
   const handleSearch = () => {
-    onSearch && onSearch({ search, tag, sort });
+    dispatch(changeFilter({ search, tag, sort }));
   };
 
   return (

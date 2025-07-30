@@ -330,7 +330,7 @@ const UnderlineSelect = forwardRef<React.ComponentRef<typeof Pressable>, SelectB
     <View ref={ref}>
       <Pressable
         ref={inputRef}
-        className={`w-28 border-b-2 border-blue-sky rounded-none flex-row items-center bg-white px-2 ${className || ''}`}
+        className={`w-36 border-b-2 border-blue-sky rounded-none flex-row items-center bg-white px-2 ${className || ''}`}
         onPress={handlePress}
         {...props}
       >
